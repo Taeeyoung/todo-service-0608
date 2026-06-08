@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY DAY FOCUS - 프리미엄 미니멀 대시보드</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #05070a;
+            overflow-x: hidden;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Premium Soft Glass Effect */
+        .premium-glass {
+            background: rgba(10, 14, 23, 0.45);
+            backdrop-filter: blur(24px) saturate(170%);
+            -webkit-backdrop-filter: blur(24px) saturate(170%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        /* Ambient Glowing Orbs - Subtle and Sophisticated */
+        .glow-orb {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(180px);
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-indigo {
+            background: radial-gradient(circle, #5f5af6 0%, transparent 70%);
+            top: -10%;
+            left: -5%;
+        }
+        .orb-violet {
+            background: radial-gradient(circle, #b87bf8 0%, transparent 70%);
+            bottom: -10%;
+            right: -5%;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(6, 8, 12, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        /* Tab Transition Effect */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tab-content.active-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Soft Hover Transition */
+        .soft-hover {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .soft-hover:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Live Block Indicator for 'NOW' */
+        @keyframes live-now-pulse {
+            0%, 100% { outline: 1.5px solid rgba(245, 158, 11, 0.8); outline-offset: 1px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+            50% { outline: 1.5px solid rgba(245, 158, 11, 0.15); outline-offset: 2px; box-shadow: 0 0 3px rgba(245, 158, 11, 0.05); }
+        }
+        .live-now-block {
+            animation: live-now-pulse 2s infinite ease-in-out;
+            z-index: 10;
+        }
+
+        /* Plant Pulse & Float Effects */
+        @keyframes plant-float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(1.5deg); }
+        }
+        .plant-animation {
+            animation: plant-float 4.5s infinite ease-in-out;
+        }
+        
+        @keyframes xp-sparkle {
+            0% { transform: scale(0.5) translateY(0); opacity: 1; }
+            100% { transform: scale(1.2) translateY(-30px); opacity: 0; }
+        }
+        .xp-particle {
+            position: absolute;
+            animation: xp-sparkle 1s forwards ease-out;
+            pointer-events: none;
+            color: #c084fc;
+            font-weight: bold;
+            font-size: 11px;
+            z-index: 30;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between p-4 md:p-6 lg:p-8 relative selection:bg-indigo-500 selection:text-white">
+
+    <div class="glow-orb orb-indigo"></div>
+    <div class="glow-orb orb-violet"></div>
+
+    <!-- MAIN WRAPPER -->
+    <div class="relative z-10 w-full flex-grow flex flex-col justify-between max-w-6xl mx-auto">
+        
+        <!-- Header Section -->
+        <header class="w-full flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <div class="flex items-center gap-3">
+                <div class="relative p-2.5 bg-neutral-900/80 border border-white/5 rounded-xl flex items-center justify-center">
+                    <i data-lucide="compass" class="w-5 h-5 text-indigo-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                        MY DAY FOCUS
+                    </h1>
+                    <p class="text-[9px] font-bold text-indigo-300/40 tracking-wider uppercase">Quiet Mind, Productive Day</p>
+                </div>
+            </div>
+
+            <!-- Real-time Clock & Date Widget -->
+            <div class="premium-glass px-5 py-2.5 rounded-2xl flex items-center gap-5 border border-white/5 shadow-lg">
+                <div class="text-right">
+                    <div id="current-date" class="text-[9px] tracking-widest text-indigo-300/80 font-bold uppercase">2026.06.08 Monday</div>
+                    <div id="current-time" class="text-2xl font-bold font-mono tracking-widest text-white mt-0.5 drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]">16:17:00</div>
+                </div>
+                <div class="w-[1px] h-8 bg-white/10"></div>
+                <div class="text-center flex flex-col items-center">
+                    <span id="greeting-icon" class="text-lg">☀️</span>
+                    <span id="greeting-text" class="text-[9px] text-slate-400 font-semibold tracking-tight mt-0.5">반가워요!</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Custom Tab Segment Control (Focus & Planner) -->
+        <nav class="w-full max-w-md mx-auto mb-6 p-1 bg-neutral-950/50 border border-white/5 rounded-xl flex relative">
+            <button onclick="switchTab('tab-focus')" id="btn-tab-focus" class="flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-white bg-white/[0.04]">
+                <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+                몰입 타이머
+            </button>
+            <button onclick="switchTab('tab-planner')" id="btn-tab-planner" class="flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-slate-400 hover:text-slate-200">
+                <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>
+                플래너 & 저널
+            </button>
+        </nav>
+
+        <!-- Main Tab Contents Container -->
+        <div class="w-full flex-grow mb-6">
+
+            <!-- TAB 1: 몰입 타이머 (할일 리스트 / 포커스 타이머) -->
+            <div id="tab-focus" class="tab-content active-content">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- Left Column: Quotes, To-Do Card, Badges (5 Cols) -->
+                    <div class="lg:col-span-5 flex flex-col gap-6">
+                        
+                        <!-- Daily Quote Widget -->
+                        <div class="premium-glass rounded-2xl p-4 relative overflow-hidden group soft-hover">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                                    <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">오늘의 생각</span>
+                                </div>
+                                <button onclick="refreshQuote()" class="p-1 text-slate-500 hover:text-indigo-400 transition-all duration-300">
+                                    <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                            <blockquote class="text-xs text-slate-300 leading-relaxed italic">
+                                <p id="quote-text">"계획 없는 목표는 단지 바람에 불과하다."</p>
+                            </blockquote>
+                            <p id="quote-author" class="text-[9px] text-slate-500 font-semibold mt-1.5 text-right">
+                                — 앙투안 드 생텍쥐페리
+                            </p>
+                        </div>
+
+                        <!-- To-Do Card -->
+                        <div class="premium-glass rounded-2xl p-5 shadow-2xl flex flex-col justify-between soft-hover flex-grow">
+                            <div>
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                                    <h2 class="text-xs font-bold text-slate-100 flex items-center gap-2">
+                                        <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                                            <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
+                                        </span>
+                                        할 일 리스트
+                                    </h2>
+
+                                    <!-- Filter States -->
+                                    <div class="flex gap-0.5 bg-neutral-950/40 p-0.5 rounded-lg border border-white/5 self-start sm:self-auto">
+                                        <button onclick="filterTasks('all')" id="filter-all" class="px-2.5 py-1 text-[9px] rounded-md bg-indigo-600 text-white font-semibold transition-all">전체</button>
+                                        <button onclick="filterTasks('active')" id="filter-active" class="px-2.5 py-1 text-[9px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all">진행</button>
+                                        <button onclick="filterTasks('completed')" id="filter-completed" class="px-2.5 py-1 text-[9px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all">완료</button>
+                                    </div>
+                                </div>
+
+                                <!-- Progress Tracker -->
+                                <div class="bg-neutral-950/20 border border-white/5 rounded-xl p-3 mb-4">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">일간 성취도</span>
+                                        <span id="progress-percent" class="text-[10px] font-bold text-indigo-400">0% 완료 (0/0)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-900/40 h-1 rounded-full overflow-hidden border border-white/5">
+                                        <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full w-[0%] transition-all duration-300 rounded-full"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Add Task Form -->
+                                <form id="add-task-form" onsubmit="addTask(event)" class="flex gap-2 mb-4">
+                                    <input type="text" id="task-input" placeholder="새로운 과업을 가볍게 채워보세요" required class="flex-grow bg-neutral-950/40 border border-white/5 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none transition-all">
+                                    <button type="submit" class="px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl flex items-center gap-1 text-xs">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Task List Area -->
+                                <div class="overflow-y-auto max-h-[180px] pr-1">
+                                    <ul id="task-list" class="space-y-2">
+                                        <!-- Dynamic items -->
+                                    </ul>
+                                    <!-- Empty State -->
+                                    <div id="empty-state" class="flex flex-col items-center justify-center py-10 text-center">
+                                        <div class="p-2.5 bg-neutral-950/30 border border-white/5 rounded-xl mb-2 text-slate-600">
+                                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                                        </div>
+                                        <h4 class="text-[11px] font-semibold text-slate-400">계획이 비어 있습니다</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Clear Completed Button -->
+                            <div class="border-t border-white/5 mt-4 pt-3 flex justify-between items-center">
+                                <span id="items-left-count" class="text-[10px] text-slate-400">0개의 할 일이 남아있습니다</span>
+                                <button onclick="clearCompletedTasks()" class="text-[10px] text-rose-400/80 hover:text-rose-300 flex items-center gap-1">
+                                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                    완료 청소
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 명예의 전당 배지 보드 -->
+                        <div class="premium-glass rounded-2xl p-4 soft-hover">
+                            <h3 class="text-[11px] font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                                <span class="p-1 bg-amber-500/10 text-amber-400 rounded-lg">
+                                    <i data-lucide="award" class="w-3 h-3"></i>
+                                </span>
+                                명예의 전당 (몰입 성취 배지)
+                            </h3>
+                            <div class="grid grid-cols-4 gap-2">
+                                <div id="badge-first-step" class="flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all">
+                                    <span class="text-xl">🌱</span>
+                                    <span class="text-[8px] font-bold text-slate-400 mt-1 truncate w-full">첫 몰입 발자국</span>
+                                </div>
+                                <div id="badge-focus-master" class="flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all">
+                                    <span class="text-xl">🔥</span>
+                                    <span class="text-[8px] font-bold text-slate-400 mt-1 truncate w-full">집중 하이웨이</span>
+                                </div>
+                                <div id="badge-todo-slayer" class="flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all">
+                                    <span class="text-xl">🎯</span>
+                                    <span class="text-[8px] font-bold text-slate-400 mt-1 truncate w-full">계획 종결자</span>
+                                </div>
+                                <div id="badge-world-tree" class="flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all">
+                                    <span class="text-xl">🌳</span>
+                                    <span class="text-[8px] font-bold text-slate-400 mt-1 truncate w-full">세계수 창조자</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Focus Timer (7 Cols) -->
+                    <div class="lg:col-span-7 flex flex-col gap-6">
+                        
+                        <!-- Single Mega Focus Timer Box -->
+                        <div class="premium-glass rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden soft-hover flex-grow">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                                            <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+                                        </span>
+                                        <span class="text-xs font-semibold text-slate-200">포커스 타이머</span>
+                                    </div>
+                                    <!-- Mode Toggles -->
+                                    <div class="flex gap-1 bg-neutral-950/40 p-0.5 rounded-lg border border-white/5">
+                                        <button onclick="setTimerMode('focus')" id="mode-focus" class="px-3 py-1 text-[10px] rounded-md bg-indigo-600 text-white font-semibold transition-all">집중</button>
+                                        <button onclick="setTimerMode('break')" id="mode-break" class="px-3 py-1 text-[10px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all">휴식</button>
+                                    </div>
+                                </div>
+
+                                <!-- Current Focus Task Input Card -->
+                                <div class="bg-neutral-950/20 border border-white/5 rounded-xl p-3 mb-4">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-[8px] font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1">
+                                            <span id="task-pulse-dot" class="w-1 h-1 rounded-full bg-slate-600"></span>
+                                            지금 몰입할 작업 정의
+                                        </span>
+                                        <span id="task-lock-status" class="text-[8px] text-slate-500 font-bold">비활성</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="focus-task-input" placeholder="예: 기획서 작성, UI 디자인 설계..." class="flex-grow bg-neutral-900/40 border border-white/5 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none transition-all">
+                                        <button id="btn-lock-task" onclick="toggleTaskLock()" class="px-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg border border-white/5 transition-all text-[11px] font-semibold flex items-center gap-1">
+                                            <i id="icon-lock-task" data-lucide="lock-open" class="w-3 h-3"></i>
+                                            <span id="text-lock-task">고정</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Preset Quick Select -->
+                                <div class="flex gap-1.5 mb-5">
+                                    <button onclick="applyPreset(25, 5)" class="flex-1 py-1.5 text-[10px] bg-white/5 hover:bg-indigo-500/10 border border-white/5 rounded-md text-slate-300 hover:text-indigo-300 font-medium transition-all">🎯 25m / 5m</button>
+                                    <button onclick="applyPreset(50, 10)" class="flex-1 py-1.5 text-[10px] bg-white/5 hover:bg-indigo-500/10 border border-white/5 rounded-md text-slate-300 hover:text-indigo-300 font-medium transition-all">🔥 50m / 10m</button>
+                                    <button onclick="applyPreset(15, 3)" class="flex-1 py-1.5 text-[10px] bg-white/5 hover:bg-indigo-500/10 border border-white/5 rounded-md text-slate-300 hover:text-indigo-300 font-medium transition-all">⚡ 15m / 3m</button>
+                                </div>
+
+                                <!-- Timer Circular Progress Display (ENLARGED to 288px) -->
+                                <div class="flex flex-col items-center justify-center my-6">
+                                    <div class="relative w-72 h-72 flex items-center justify-center">
+                                        <!-- Inner Glassy Ambient Glow Background inside Timer -->
+                                        <div class="absolute inset-10 rounded-full bg-slate-900/40 border border-white/5 shadow-2xl"></div>
+                                        <!-- Scaled Circular SVG (r=110, circumference=691.15) -->
+                                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 256 256">
+                                            <circle cx="128" cy="128" r="110" stroke="rgba(255, 255, 255, 0.02)" stroke-width="4.5" fill="transparent"/>
+                                            <circle id="timer-progress" cx="128" cy="128" r="110" stroke="#6366f1" stroke-width="6" stroke-dasharray="691.15" stroke-dashoffset="0" stroke-linecap="round" fill="transparent" class="transition-all duration-300 filter drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]"/>
+                                        </svg>
+                                        <div class="absolute flex flex-col items-center max-w-[190px] text-center">
+                                            <span id="timer-active-task" class="text-[9px] text-indigo-300 font-extrabold truncate max-w-[170px] hidden mb-1 uppercase tracking-wider">작업 미지정</span>
+                                            <span id="timer-time" class="text-4xl md:text-5xl font-light font-mono text-white tracking-widest">25:00</span>
+                                            <span id="timer-status-text" class="text-[9px] text-indigo-300/60 font-bold uppercase tracking-widest mt-1.5">집중 모드</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Time Sliders -->
+                                <div class="bg-neutral-950/20 border border-white/5 rounded-xl p-3 mb-4 space-y-2">
+                                    <div>
+                                        <div class="flex justify-between text-[9px] mb-0.5 font-semibold text-slate-400">
+                                            <span>집중 시간 설정</span>
+                                            <span id="label-focus-time" class="text-indigo-400 font-bold">25분</span>
+                                        </div>
+                                        <input type="range" id="slider-focus" min="1" max="90" value="25" oninput="handleSliderChange()" class="w-full h-[3px] bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[9px] mb-0.5 font-semibold text-slate-400">
+                                            <span>휴식 시간 설정</span>
+                                            <span id="label-break-time" class="text-emerald-400 font-bold">5분</span>
+                                        </div>
+                                        <input type="range" id="slider-break" min="1" max="30" value="5" oninput="handleSliderChange()" class="w-full h-[3px] bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                                    </div>
+                                </div>
+
+                                <!-- Ambient Soundscapes Controller -->
+                                <div class="bg-indigo-500/[0.02] border border-indigo-500/10 rounded-xl p-3 mb-5">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-[9px] font-bold text-indigo-300 flex items-center gap-1">
+                                            <i data-lucide="headphones" class="w-3 h-3"></i>
+                                            집중 극대화 백색소음 (Ambient Sound)
+                                        </span>
+                                        <span id="sound-status-label" class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">꺼짐</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-1.5">
+                                        <button onclick="toggleAmbientSound('rain')" id="btn-sound-rain" class="py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all">
+                                            🌧️ 빗소리
+                                        </button>
+                                        <button onclick="toggleAmbientSound('fire')" id="btn-sound-fire" class="py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all">
+                                            🔥 모닥불
+                                        </button>
+                                        <button onclick="toggleAmbientSound('space')" id="btn-sound-space" class="py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all">
+                                            🌌 차원 공간
+                                        </button>
+                                    </div>
+                                    <div class="mt-2.5 flex items-center gap-2">
+                                        <i data-lucide="volume-2" class="w-3 h-3 text-indigo-400"></i>
+                                        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="adjustAmbientVolume()" class="flex-grow h-[3px] bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Timer Controls -->
+                            <div class="flex gap-2 mt-2">
+                                <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-grow py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-lg font-semibold shadow-lg transition-all flex items-center justify-center gap-1.5 text-xs">
+                                    <i id="icon-timer-play" data-lucide="play" class="w-3.5 h-3.5"></i>
+                                    <span id="text-timer-play">타이머 시작</span>
+                                </button>
+                                <button onclick="resetTimer()" class="px-4 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg border border-white/5 transition-all flex items-center justify-center">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: 플래너 & 저널 (반반 비율 1:1 레이아웃) -->
+            <div id="tab-planner" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Left Column (50% Width) -->
+                    <div class="flex flex-col gap-6">
+                        
+                        <!-- Today's Focus Dot Map Card -->
+                        <div class="premium-glass rounded-2xl p-5 relative overflow-hidden soft-hover flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">
+                                            <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+                                        </span>
+                                        <div>
+                                            <span class="text-xs font-semibold text-slate-200">오늘의 몰입 지도 (10분 단위)</span>
+                                            <p class="text-[8px] text-slate-500 mt-0.5">06:00 - 익일 02:00 범위</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[8px] text-slate-400">
+                                        <button onclick="resetDotGrid()" class="text-rose-400/70 hover:text-rose-400 transition-colors">초기화</button>
+                                    </div>
+                                </div>
+
+                                <!-- Visibility Stats Widget -->
+                                <div class="grid grid-cols-2 gap-2 bg-neutral-950/30 p-2 rounded-xl border border-white/5 mb-2.5 text-center">
+                                    <div class="border-r border-white/5">
+                                        <div class="text-[8px] text-slate-500 font-bold uppercase tracking-wider">누적 집중 시간</div>
+                                        <div id="compact-stats-time" class="text-[11px] font-mono font-bold text-indigo-400 mt-0.5">0분</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-[8px] text-slate-500 font-bold uppercase tracking-wider font-bold">목표 완수율</div>
+                                        <div id="compact-stats-pct" class="text-[11px] font-mono font-bold text-purple-400 mt-0.5">0%</div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Active Hover Panel -->
+                                <div class="bg-indigo-500/[0.02] border border-indigo-500/10 px-3.5 py-2.5 rounded-xl mb-2.5 text-xs text-slate-200 font-semibold flex items-center justify-between">
+                                    <span class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                                        <span id="compact-hover-time" class="tracking-wide text-slate-300">도트 영역에 마우스를 얹어보세요</span>
+                                    </span>
+                                    <span id="compact-hover-status" class="text-indigo-400 font-extrabold tracking-wider">대기</span>
+                                </div>
+                            </div>
+
+                            <!-- Grid View -->
+                            <div class="bg-neutral-950/30 p-2.5 rounded-xl border border-white/5 overflow-x-auto">
+                                <div id="compact-dot-matrix" class="flex flex-col gap-1 min-w-[220px]">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Virtual Flowerpot -->
+                        <div class="premium-glass rounded-2xl p-5 relative overflow-hidden soft-hover flex-grow flex flex-col justify-between" id="flowerpot-card">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">
+                                            <i data-lucide="sprout" class="w-3.5 h-3.5"></i>
+                                        </span>
+                                        <div>
+                                            <span class="text-xs font-semibold text-slate-200">몰입 성장의 화분</span>
+                                            <p class="text-[8px] text-slate-500 mt-0.5">성장 경험치를 축적하세요</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="waterPlant(event)" id="btn-water" class="p-1.5 bg-indigo-600/10 border border-indigo-500/20 text-indigo-300 hover:bg-indigo-600/20 rounded-lg text-[10px] flex items-center gap-1 transition-all">
+                                        💧 <span class="font-bold">물주기</span>
+                                    </button>
+                                </div>
+
+                                <!-- Plant Display Screen -->
+                                <div class="flex flex-col items-center justify-center bg-neutral-950/20 border border-white/5 rounded-xl p-4 relative mb-3">
+                                    <div class="w-16 h-16 bg-neutral-900/40 border border-white/5 rounded-xl flex items-center justify-center relative shadow-inner select-none overflow-hidden mb-2">
+                                        <div class="absolute bottom-1 w-12 h-3 bg-purple-500/10 rounded-full blur-sm"></div>
+                                        <span id="plant-avatar" class="text-3xl plant-animation cursor-pointer transition-transform duration-300 hover:scale-110" onclick="triggerPlantWiggle()">🌱</span>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <div class="flex justify-center items-center gap-1.5">
+                                            <span id="plant-level-title" class="text-[11px] font-black text-purple-300">Lv.1 아기 씨앗</span>
+                                            <span id="plant-level-badge" class="text-[7px] bg-purple-500/10 border border-purple-400/20 text-purple-300 px-1.5 py-0.5 rounded-full font-bold">LV 1</span>
+                                        </div>
+                                        <p id="plant-status-text" class="text-[9px] text-slate-400 mt-1 max-w-xs leading-normal font-medium">오늘의 첫 몰입을 수분으로 맞이하세요.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Level XP Progress -->
+                            <div class="bg-neutral-950/10 p-2.5 rounded-xl border border-white/5">
+                                <div class="flex justify-between text-[8px] text-slate-500 font-bold mb-1">
+                                    <span>다음 단계까지 성장도</span>
+                                    <span id="plant-xp-text">0 / 100 XP</span>
+                                </div>
+                                <div class="w-full bg-slate-900/40 h-1 rounded-full overflow-hidden border border-white/5">
+                                    <div id="plant-xp-bar" class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full w-[0%] transition-all duration-300 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column (50% Width) -->
+                    <div class="flex flex-col gap-6">
+                        
+                        <!-- Daily Journal Card -->
+                        <div class="premium-glass rounded-2xl p-5 shadow-2xl soft-hover flex-grow flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-xs font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                                    <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                                        <i data-lucide="smile" class="w-3.5 h-3.5"></i>
+                                    </span>
+                                    기분 & 확장형 감정 일기장
+                                </h3>
+                                
+                                <!-- Mood Buttons -->
+                                <div class="grid grid-cols-5 gap-2 mb-4">
+                                    <button onclick="selectMood('happy')" id="mood-happy" class="flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent transition-all hover:bg-white/10">
+                                        <span class="text-xl">😊</span>
+                                        <span class="text-[8px] font-bold text-slate-400">좋음</span>
+                                    </button>
+                                    <button onclick="selectMood('calm')" id="mood-calm" class="flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent transition-all hover:bg-white/10">
+                                        <span class="text-xl">😌</span>
+                                        <span class="text-[8px] font-bold text-slate-400">평온</span>
+                                    </button>
+                                    <button onclick="selectMood('tired')" id="mood-tired" class="flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent transition-all hover:bg-white/10">
+                                        <span class="text-xl">🥱</span>
+                                        <span class="text-[8px] font-bold text-slate-400">피곤</span>
+                                    </button>
+                                    <button onclick="selectMood('sad')" id="mood-sad" class="flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent transition-all hover:bg-white/10">
+                                        <span class="text-xl">😢</span>
+                                        <span class="text-[8px] font-bold text-slate-400">슬픔</span>
+                                    </button>
+                                    <button onclick="selectMood('stressed')" id="mood-stressed" class="flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent transition-all hover:bg-white/10">
+                                        <span class="text-xl">🤯</span>
+                                        <span class="text-[8px] font-bold text-slate-400">과부하</span>
+                                    </button>
+                                </div>
+
+                                <!-- Daily Memo Input (Deeply Expanded) -->
+                                <div class="relative mb-3">
+                                    <textarea id="daily-journal" rows="12" placeholder="오늘 당신의 생각은 어떤 흐름으로 이어졌나요? 몰입의 과정을 회고하고 느꼈던 영감과 해결책을 이곳에 넓고 깊게 기록해 두세요..." class="w-full bg-neutral-950/40 border border-white/5 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none resize-none transition-all leading-relaxed"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end gap-2">
+                                <button onclick="saveJournal()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                                    <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                                    기록 저장하기
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Daily Report & Data Management Hub -->
+                        <div class="premium-glass rounded-2xl p-4 soft-hover">
+                            <h3 class="text-[11px] font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                                <span class="p-1 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                                    <i data-lucide="archive" class="w-3 h-3"></i>
+                                </span>
+                                일간 보고서 및 데이터 안전 관리
+                            </h3>
+                            <div class="space-y-2">
+                                <button onclick="generateDailyReport()" class="w-full py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                                    오늘의 마감 리포트 클립보드 복사 📝
+                                </button>
+                                
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="exportData()" class="py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1">
+                                        <i data-lucide="download" class="w-3 h-3"></i>
+                                        데이터 백업
+                                    </button>
+                                    <button onclick="triggerDataImport()" class="py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1">
+                                        <i data-lucide="upload" class="w-3 h-3"></i>
+                                        데이터 복원
+                                    </button>
+                                </div>
+                                <input type="file" id="import-file-input" class="hidden" accept=".json" onchange="importData(event)">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Custom Confirmation Modal -->
+        <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+            <div class="premium-glass max-w-sm w-full mx-4 rounded-2xl p-5 border border-white/5 transform scale-95 transition-all duration-300" id="confirm-modal-box">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-xl">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-100">안내</h3>
+                </div>
+                <p id="confirm-modal-msg" class="text-xs text-slate-300 leading-relaxed mb-5">타이머가 현재 가동 중입니다. 정말 초기화하시겠습니까?</p>
+                <div class="flex gap-2">
+                    <button id="btn-confirm-cancel" class="flex-1 py-2 bg-white/5 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-white/5 transition-all">취소</button>
+                    <button id="btn-confirm-accept" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Focus Extension Offer Modal -->
+        <div id="focus-extension-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+            <div class="premium-glass max-w-sm w-full mx-4 rounded-2xl p-5 border border-white/5 transform scale-95 transition-all duration-300" id="extension-modal-box">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-xl">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-100">몰입의 연속성 유지 제안</h3>
+                        <p class="text-[8px] text-indigo-300 font-bold uppercase tracking-wider mt-0.5">Continuous Focus Loop</p>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                    현재 한창 집중 중인 작업 <strong id="ext-modal-task-name" class="text-indigo-400">"업무"</strong>의 집중 시간이 끝났습니다. 몰입 흐름이 끊기지 않게 **연장**하여 집중을 지속하시겠습니까?
+                </p>
+                <div class="space-y-1.5 mb-3">
+                    <button onclick="acceptExtension(60)" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 1시간 연장 후 집중 지속하기
+                    </button>
+                    <button onclick="acceptExtension(30)" class="w-full py-2 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-white/5 transition-all flex items-center justify-center gap-1">
+                        <i data-lucide="plus-circle" class="w-3 h-3"></i> 30분 짧게 연장하기
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="rejectExtension()" class="flex-1 py-1.5 bg-neutral-900 hover:bg-neutral-850 text-slate-400 hover:text-slate-300 rounded-lg text-[9px] font-bold transition-all">
+                        지금은 쉴래요 ☕
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Notifications / Toast Container -->
+        <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm"></div>
+
+        <!-- Footer -->
+        <footer class="w-full text-center text-[9px] text-slate-500 pt-4 border-t border-white/5 mb-2">
+            <p>© 2026 My Day Focus. Carefully designed with minimal spatial aesthetics.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // State Management
+        let tasks = [];
+        let currentFilter = 'all';
+        let activeMood = '';
+        
+        // Timer Variables
+        let timerInterval = null;
+        let isTimerRunning = false;
+        let timerMode = 'focus'; // 'focus' or 'break'
+
+        // Task lock states
+        let isTaskLocked = false;
+        let activeTaskName = "";
+
+        // Preset Settings
+        let customFocusTime = 25; // in minutes
+        let customBreakTime = 5; // in minutes
+        let timerSeconds = 25 * 60;
+
+        // 10-Minute Dot Matrix States (120 blocks for 20 hours: 06:00 to 02:00 next day)
+        let dotGridStates = Array(120).fill(0);
+
+        // Plant Growth States
+        let plantLevel = 1;
+        let plantXp = 0;
+        const maxLevel = 6;
+        const xpPerLevel = 100;
+
+        const plantData = {
+            1: { emoji: "🌱", title: "Lv.1 아기 씨앗", desc: "새벽녘 이슬을 맞으며 싹틔울 준비를 합니다." },
+            2: { emoji: "🌿", title: "Lv.2 허브 새싹", desc: "몰입의 향기를 은은히 풍기는 귀여운 새싹입니다." },
+            3: { emoji: "🌷", title: "Lv.3 꽃봉오리", desc: "집중의 온기가 봉오리 끝에 맺혀 붉게 물듭니다." },
+            4: { emoji: "🌸", title: "Lv.4 찬란한 꽃", desc: "완전한 깊은 몰입의 수분으로 아름답게 활짝 피었습니다!" },
+            5: { emoji: "🌳", title: "Lv.5 몰입 나무", desc: "단풍잎처럼 곧고 울창하게 뻗어 세상을 비춥니다." },
+            6: { emoji: "🌌", title: "Lv.6 차원 세계수", desc: "우주 저 멀리 차원을 뛰어넘는 진정한 초의식의 나무입니다." }
+        };
+
+        const quotes = [
+            { text: "계획 없는 목표는 단지 바람에 불과하다.", author: "앙투안 드 생텍쥐페리" },
+            { text: "단 하나의 목표에 완벽히 집중하라. 에너지는 분산되면 힘을 잃는다.", author: "알렉산더 그레이엄 벨" },
+            { text: "조용하고 맑은 마음에 모든 우주의 힘이 들어선다.", author: "노자" },
+            { text: "어제와 똑같이 살면서 다른 미래를 기대하는 것은 어리석은 짓이다.", author: "알베르트 아인슈타인" },
+            { text: "몰입은 고통의 부재가 아닌, 자아의 극대화된 상태다.", author: "미하이 칙센트미하이" }
+        ];
+
+        // Audio Context State
+        let audioCtx = null;
+        let ambientNodes = {
+            rain: null,
+            fire: null,
+            space: null
+        };
+        let masterGainNode = null;
+        let activeAmbientType = null;
+
+        window.onload = function() {
+            // Initialize Lucide Icons
+            lucide.createIcons();
+            
+            // Load saved data
+            loadTasks();
+            loadMoodAndJournal();
+            loadDotGrid();
+            loadPlantState();
+            loadTimerSettings();
+            
+            // Update initial UI
+            renderTasks();
+            renderAllGrids();
+            updateClock();
+            refreshQuote();
+            updatePlantUI();
+            checkBadges();
+            
+            // Start real-time clock loop
+            setInterval(updateClock, 1000);
+            updateTimerDisplay();
+        };
+
+        // Task Locking
+        function toggleTaskLock() {
+            const input = document.getElementById('focus-task-input');
+            const btn = document.getElementById('btn-lock-task');
+            const icon = document.getElementById('icon-lock-task');
+            const text = document.getElementById('text-lock-task');
+            const statusLabel = document.getElementById('task-lock-status');
+            const pulseDot = document.getElementById('task-pulse-dot');
+            const activeTag = document.getElementById('timer-active-task');
+
+            const val = input.value.trim();
+
+            if (!isTaskLocked) {
+                if (!val) {
+                    showToast("집중할 작업 명칭을 입력해 주세요.", "info");
+                    return;
+                }
+                
+                isTaskLocked = true;
+                activeTaskName = val;
+
+                input.disabled = true;
+                input.className = "flex-grow bg-neutral-950/60 border border-white/5 rounded-lg px-3 py-1.5 text-xs text-indigo-300 font-semibold cursor-not-allowed transition-all";
+                
+                btn.className = "px-3 bg-indigo-600 text-white rounded-lg border border-indigo-500/20 transition-all text-[11px] font-semibold flex items-center gap-1 active:scale-95";
+                icon.setAttribute('data-lucide', 'lock');
+                text.textContent = "해제";
+                
+                statusLabel.textContent = "고정됨";
+                statusLabel.className = "text-[8px] text-indigo-400 font-bold";
+                pulseDot.className = "w-1 h-1 rounded-full bg-indigo-500 animate-pulse";
+
+                activeTag.textContent = activeTaskName;
+                activeTag.classList.remove('hidden');
+
+                showToast(`🎯 작업 [${activeTaskName}]이 고정되었습니다. 몰입을 시작하세요!`, "success");
+            } else {
+                isTaskLocked = false;
+                activeTaskName = "";
+
+                input.disabled = false;
+                input.className = "flex-grow bg-neutral-900/40 border border-white/5 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none transition-all";
+
+                btn.className = "px-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg border border-white/5 transition-all text-[11px] font-semibold flex items-center gap-1 active:scale-95";
+                icon.setAttribute('data-lucide', 'lock-open');
+                text.textContent = "고정";
+
+                statusLabel.textContent = "비활성";
+                statusLabel.className = "text-[8px] text-slate-500 font-bold";
+                pulseDot.className = "w-1 h-1 rounded-full bg-slate-600";
+
+                activeTag.classList.add('hidden');
+                showToast("작업 고정이 해제되었습니다.", "info");
+            }
+            lucide.createIcons();
+        }
+
+        // Extension Modals
+        function triggerExtensionCheck() {
+            const targetTask = activeTaskName || "오늘의 주요 과업";
+            document.getElementById('ext-modal-task-name').textContent = `"${targetTask}"`;
+
+            const modal = document.getElementById('focus-extension-modal');
+            const box = document.getElementById('extension-modal-box');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            box.classList.remove('scale-95');
+        }
+
+        function acceptExtension(minutes) {
+            closeExtensionModalInternal();
+
+            timerSeconds = minutes * 60;
+            timerMode = 'focus';
+            document.getElementById('timer-status-text').textContent = "집중 모드";
+            updateTimerDisplay();
+
+            isTimerRunning = true;
+            setPlayBtnActive(true);
+
+            const activeIdx = getCurrentTimeBlockIndex();
+            if (activeIdx !== -1) {
+                dotGridStates[activeIdx] = 1; 
+                saveDotGrid();
+                renderAllGrids();
+            }
+
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            showToast(`🔥 몰입을 지속합니다! [${minutes}분] 연장 세션이 시작되었습니다.`, "success");
+            playBeepSound();
+        }
+
+        function rejectExtension() {
+            closeExtensionModalInternal();
+            showToast("연장을 종료하고 휴식 세션으로 이동합니다.", "info");
+            setTimerMode('break');
+        }
+
+        function closeExtensionModalInternal() {
+            const modal = document.getElementById('focus-extension-modal');
+            const box = document.getElementById('extension-modal-box');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            box.classList.add('scale-95');
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active-content');
+            });
+
+            document.getElementById(tabId).classList.add('active-content');
+
+            const tabs = ['tab-focus', 'tab-planner'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === tabId) {
+                    btn.className = "flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-white bg-white/[0.04]";
+                } else {
+                    btn.className = "flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-slate-400 hover:text-slate-200";
+                }
+            });
+
+            // Re-render grids if switched to planner (as map is now there)
+            if (tabId === 'tab-planner') {
+                renderAllGrids();
+            }
+        }
+
+        // Clock Widget
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            const timeEl = document.getElementById('current-time');
+            if (timeEl) timeEl.textContent = `${hours}:${minutes}:${seconds}`;
+
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = days[now.getDay()];
+            
+            const dateEl = document.getElementById('current-date');
+            if (dateEl) dateEl.textContent = `${year}.${month < 10 ? '0' + month : month}.${date < 10 ? '0' + date : date} ${dayName}`;
+
+            // Realtime Update 'NOW' block in grid
+            const activeIdx = getCurrentTimeBlockIndex();
+            const dots = document.querySelectorAll('.single-dot-cell');
+            dots.forEach(dot => {
+                const idx = parseInt(dot.getAttribute('data-index'));
+                if (idx === activeIdx) {
+                    dot.classList.add('live-now-block');
+                } else {
+                    dot.classList.remove('live-now-block');
+                }
+            });
+
+            let greeting = "반가워요!";
+            let icon = "☀️";
+            const currentHour = now.getHours();
+            if (currentHour >= 5 && currentHour < 11) {
+                greeting = "아침 활력 채우기!";
+                icon = "🌅";
+            } else if (currentHour >= 11 && currentHour < 17) {
+                greeting = "몰입의 시간!";
+                icon = "☀️";
+            } else if (currentHour >= 17 && currentHour < 22) {
+                greeting = "차분한 시간";
+                icon = "🌆";
+            } else {
+                greeting = "하루 정리";
+                icon = "🌙";
+            }
+            const greetIconEl = document.getElementById('greeting-icon');
+            const greetTextEl = document.getElementById('greeting-text');
+            if (greetIconEl) greetIconEl.textContent = icon;
+            if (greetTextEl) greetTextEl.textContent = greeting;
+        }
+
+        function refreshQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            document.getElementById('quote-text').textContent = `"${quote.text}"`;
+            document.getElementById('quote-author').textContent = `— ${quote.author}`;
+        }
+
+        // Pomodoro Timer Engine
+        function handleSliderChange() {
+            if (isTimerRunning) {
+                showToast("타이머 작동 중에는 시간 설정을 바꿀 수 없습니다.", "info");
+                document.getElementById('slider-focus').value = customFocusTime;
+                document.getElementById('slider-break').value = customBreakTime;
+                return;
+            }
+
+            customFocusTime = parseInt(document.getElementById('slider-focus').value);
+            customBreakTime = parseInt(document.getElementById('slider-break').value);
+
+            document.getElementById('label-focus-time').textContent = `${customFocusTime}분`;
+            document.getElementById('label-break-time').textContent = `${customBreakTime}분`;
+
+            timerSeconds = (timerMode === 'focus' ? customFocusTime : customBreakTime) * 60;
+            updateTimerDisplay();
+            saveTimerSettings();
+        }
+
+        function applyPreset(focusMin, breakMin) {
+            if (isTimerRunning) {
+                showToast("실행 중인 타이머를 먼저 멈춰주세요.", "info");
+                return;
+            }
+            customFocusTime = focusMin;
+            customBreakTime = breakMin;
+
+            document.getElementById('slider-focus').value = focusMin;
+            document.getElementById('slider-break').value = breakMin;
+
+            document.getElementById('label-focus-time').textContent = `${focusMin}분`;
+            document.getElementById('label-break-time').textContent = `${breakMin}분`;
+
+            timerSeconds = (timerMode === 'focus' ? customFocusTime : customBreakTime) * 60;
+            updateTimerDisplay();
+            saveTimerSettings();
+            showToast(`⚙️ 프리셋 적용: 집중 ${focusMin}분 / 휴식 ${breakMin}분`, "success");
+        }
+
+        function setTimerMode(mode) {
+            if (isTimerRunning) {
+                showToast("타이머 작동 중에는 모드를 전환할 수 없습니다.", "info");
+                return;
+            }
+            timerMode = mode;
+            
+            const btnFocus = document.getElementById('mode-focus');
+            const btnBreak = document.getElementById('mode-break');
+            const statusLabel = document.getElementById('timer-status-text');
+
+            if (mode === 'focus') {
+                btnFocus.className = "px-3 py-1 text-[10px] rounded-md bg-indigo-600 text-white font-semibold transition-all";
+                btnBreak.className = "px-3 py-1 text-[10px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all";
+                timerSeconds = customFocusTime * 60;
+                statusLabel.textContent = "집중 모드";
+            } else {
+                btnFocus.className = "px-3 py-1 text-[10px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all";
+                btnBreak.className = "px-3 py-1 text-[10px] rounded-md bg-emerald-600 text-white font-semibold transition-all";
+                timerSeconds = customBreakTime * 60;
+                statusLabel.textContent = "휴식 모드";
+            }
+
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            const displayTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            document.getElementById('timer-time').textContent = displayTime;
+
+            const total = (timerMode === 'focus' ? customFocusTime : customBreakTime) * 60;
+            const percentage = total > 0 ? (timerSeconds / total) : 0;
+            const circle = document.getElementById('timer-progress');
+            
+            // Adjusted calculations for enlarged circle radius=110, circumference=691.15
+            const r = 110;
+            const circumference = 2 * Math.PI * r; // 691.15
+            const offset = circumference - (percentage * circumference);
+            circle.style.strokeDashoffset = offset;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                setPlayBtnActive(false);
+                showToast("타이머가 일시 정지되었습니다.", "info");
+            } else {
+                isTimerRunning = true;
+                setPlayBtnActive(true);
+                showToast(timerMode === 'focus' ? "집중 몰입을 시작합니다." : "휴식 세션이 시작되었습니다.", "success");
+                
+                if (timerMode === 'focus') {
+                    const activeIdx = getCurrentTimeBlockIndex();
+                    if (activeIdx !== -1) {
+                        dotGridStates[activeIdx] = 1; 
+                        saveDotGrid();
+                        renderAllGrids();
+                    }
+                }
+
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        setPlayBtnActive(false);
+                        playBeepSound();
+                        
+                        if (timerMode === 'focus') {
+                            showToast("한 세션을 멋지게 성공했습니다!", "success");
+                            
+                            const activeIdx = getCurrentTimeBlockIndex();
+                            if (activeIdx !== -1) {
+                                dotGridStates[activeIdx] = 2; 
+                                saveDotGrid();
+                                renderAllGrids();
+                            }
+
+                            addPlantXp(50);
+                            triggerExtensionCheck();
+                        } else {
+                            showToast("휴식이 완료되었습니다. 다음 도전을 시작하세요.", "info");
+                            setTimerMode('focus');
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            if (isTimerRunning) {
+                openConfirmModal("타이머가 진행 중입니다. 초기화하시겠습니까?", () => {
+                    performReset();
+                });
+            } else {
+                performReset();
+            }
+        }
+
+        function performReset() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            setPlayBtnActive(false);
+            timerSeconds = (timerMode === 'focus' ? customFocusTime : customBreakTime) * 60;
+            updateTimerDisplay();
+            showToast("타이머가 초기화되었습니다.", "info");
+        }
+
+        function setPlayBtnActive(active) {
+            const btn = document.getElementById('btn-timer-toggle');
+            const icon = document.getElementById('icon-timer-play');
+            const text = document.getElementById('text-timer-play');
+
+            if (active) {
+                btn.className = "flex-grow py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-all flex items-center justify-center gap-1.5 text-xs";
+                icon.setAttribute('data-lucide', 'pause');
+                text.textContent = "일시 정지";
+            } else {
+                btn.className = "flex-grow py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-lg font-semibold shadow-lg transition-all flex items-center justify-center gap-1.5 text-xs";
+                icon.setAttribute('data-lucide', 'play');
+                text.textContent = "타이머 시작";
+            }
+            lucide.createIcons();
+        }
+
+        // Web Audio API Synths (Ambient generator)
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGainNode = audioCtx.createGain();
+                masterGainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                masterGainNode.connect(audioCtx.destination);
+            }
+        }
+
+        function createNoiseBuffer() {
+            const sampleRate = audioCtx.sampleRate;
+            const bufferSize = 2 * sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            return noiseBuffer;
+        }
+
+        function toggleAmbientSound(type) {
+            initAudioContext();
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const btnRain = document.getElementById('btn-sound-rain');
+            const btnFire = document.getElementById('btn-sound-fire');
+            const btnSpace = document.getElementById('btn-sound-space');
+            const statusLabel = document.getElementById('sound-status-label');
+
+            if (activeAmbientType === type) {
+                stopAllAmbientSounds();
+                activeAmbientType = null;
+                statusLabel.textContent = "꺼짐";
+                
+                btnRain.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+                btnFire.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+                btnSpace.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+                
+                showToast("사운드가 꺼졌습니다.", "info");
+                return;
+            }
+
+            stopAllAmbientSounds();
+            activeAmbientType = type;
+
+            btnRain.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+            btnFire.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+            btnSpace.className = "py-1.5 text-[9px] bg-white/5 hover:bg-indigo-500/5 border border-white/5 rounded-lg text-slate-300 font-semibold transition-all";
+
+            if (type === 'rain') {
+                btnRain.className = "py-1.5 text-[9px] bg-indigo-600/20 border border-indigo-500/40 rounded-lg text-indigo-300 font-semibold transition-all";
+                statusLabel.textContent = "🌧️ 빗소리";
+                startRainSynth();
+            } else if (type === 'fire') {
+                btnFire.className = "py-1.5 text-[9px] bg-amber-600/20 border border-amber-500/40 rounded-lg text-amber-300 font-semibold transition-all";
+                statusLabel.textContent = "🔥 모닥불";
+                startFireSynth();
+            } else if (type === 'space') {
+                btnSpace.className = "py-1.5 text-[9px] bg-purple-600/20 border border-purple-500/40 rounded-lg text-purple-300 font-semibold transition-all";
+                statusLabel.textContent = "🌌 차원 공간";
+                startSpaceSynth();
+            }
+
+            showToast(`${statusLabel.textContent} 환경음을 합성 및 실행합니다.`, "success");
+        }
+
+        function startRainSynth() {
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = createNoiseBuffer();
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGainNode);
+
+            noise.start(0);
+            ambientNodes.rain = { source: noise, filter: filter, gain: gain };
+        }
+
+        function startFireSynth() {
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = createNoiseBuffer();
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+            filter.Q.setValueAtTime(1.0, audioCtx.currentTime);
+
+            const rumbleGain = audioCtx.createGain();
+            rumbleGain.gain.setValueAtTime(0.6, audioCtx.currentTime);
+
+            noise.connect(filter);
+            filter.connect(rumbleGain);
+            rumbleGain.connect(masterGainNode);
+
+            noise.start(0);
+
+            const crackleOsc = audioCtx.createOscillator();
+            crackleOsc.type = 'triangle';
+            crackleOsc.frequency.setValueAtTime(20, audioCtx.currentTime);
+
+            const waveShaper = audioCtx.createWaveShaper();
+            const makeDistortionCurve = () => {
+                const k = 400;
+                const n_samples = 44100;
+                const curve = new Float32Array(n_samples);
+                const deg = Math.PI / 180;
+                for (let i = 0 ; i < n_samples; ++i ) {
+                    const x = (i * 2) / n_samples - 1;
+                    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+                }
+                return curve;
+            };
+            waveShaper.curve = makeDistortionCurve();
+
+            const crackleGain = audioCtx.createGain();
+            crackleGain.gain.setValueAtTime(0.012, audioCtx.currentTime);
+
+            crackleOsc.connect(waveShaper);
+            waveShaper.connect(crackleGain);
+            crackleGain.connect(masterGainNode);
+
+            crackleOsc.start(0);
+
+            ambientNodes.fire = {
+                rumbleSrc: noise,
+                rumbleFilter: filter,
+                crackleSrc: crackleOsc,
+                gain: rumbleGain,
+                crackleGain: crackleGain
+            };
+        }
+
+        function startSpaceSynth() {
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            
+            osc1.type = 'sine';
+            osc2.type = 'triangle';
+
+            osc1.frequency.setValueAtTime(80, audioCtx.currentTime);
+            osc2.frequency.setValueAtTime(80.5, audioCtx.currentTime);
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(160, audioCtx.currentTime);
+
+            const lfo = audioCtx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.setValueAtTime(0.1, audioCtx.currentTime);
+
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(50, audioCtx.currentTime);
+
+            lfo.connect(lfoGain);
+            lfoGain.connect(filter.frequency);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+
+            osc1.connect(filter);
+            osc2.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGainNode);
+
+            osc1.start(0);
+            osc2.start(0);
+            lfo.start(0);
+
+            ambientNodes.space = {
+                osc1: osc1,
+                osc2: osc2,
+                lfo: lfo,
+                filter: filter,
+                gain: gain
+            };
+        }
+
+        function stopAllAmbientSounds() {
+            if (ambientNodes.rain) {
+                try { ambientNodes.rain.source.stop(); } catch(e){}
+                ambientNodes.rain = null;
+            }
+            if (ambientNodes.fire) {
+                try { ambientNodes.fire.rumbleSrc.stop(); } catch(e){}
+                try { ambientNodes.fire.crackleSrc.stop(); } catch(e){}
+                ambientNodes.fire = null;
+            }
+            if (ambientNodes.space) {
+                try { ambientNodes.space.osc1.stop(); } catch(e){}
+                try { ambientNodes.space.osc2.stop(); } catch(e){}
+                try { ambientNodes.space.lfo.stop(); } catch(e){}
+                ambientNodes.space = null;
+            }
+        }
+
+        function adjustAmbientVolume() {
+            const vol = parseFloat(document.getElementById('volume-slider').value);
+            initAudioContext();
+            masterGainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        }
+
+        function playBeepSound() {
+            initAudioContext();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.15); // G5
+
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(0);
+            osc.stop(audioCtx.currentTime + 0.65);
+        }
+
+        // 10-Minute Dot Grid Mapping
+        function getCurrentTimeBlockIndex() {
+            const now = new Date();
+            let hours = now.getHours();
+            const mins = now.getMinutes();
+
+            let relativeHour = hours;
+            if (hours < 6) {
+                relativeHour = hours + 24; // 00:00 - 05:59 mapped to 24:00 - 29:59
+            }
+
+            if (relativeHour >= 6 && relativeHour < 26) {
+                const hourOffset = relativeHour - 6;
+                const minutesOffset = Math.floor(mins / 10);
+                return (hourOffset * 6) + minutesOffset;
+            }
+            return -1;
+        }
+
+        function convertIndexToTimeStr(idx) {
+            const startTotalMins = 6 * 60 + idx * 10;
+            const format = (totalMins) => {
+                let h = Math.floor(totalMins / 60) % 24;
+                let m = totalMins % 60;
+                const ampm = h < 12 ? "오전" : "오후";
+                let displayH = h % 12;
+                if (displayH === 0) displayH = 12;
+                return `${ampm} ${displayH}:${m < 10 ? '0' : ''}${m}`;
+            };
+            return `${format(startTotalMins)} ~ ${format(startTotalMins + 10)}`;
+        }
+
+        function toggleDotGridCell(index) {
+            const oldState = dotGridStates[index];
+            let newState = 0;
+            if (oldState === 0) newState = 2; // Perfect Purple
+            else if (oldState === 2) newState = 1; // Warning Yellow
+            else newState = 0;
+
+            dotGridStates[index] = newState;
+            saveDotGrid();
+            renderAllGrids();
+
+            if (newState === 2) {
+                addPlantXp(15);
+                showToast("👏 수동 성취가 기록되었습니다! (+15 XP)", "success");
+            }
+            checkBadges();
+        }
+
+        function renderAllGrids() {
+            const container = document.getElementById('compact-dot-matrix');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const liveIdx = getCurrentTimeBlockIndex();
+
+            let focusMins = 0;
+            let totalActiveMins = 0;
+            for (let i = 0; i < 120; i++) {
+                if (dotGridStates[i] === 2) {
+                    focusMins += 10;
+                    totalActiveMins += 10;
+                } else if (dotGridStates[i] === 1) {
+                    totalActiveMins += 10;
+                }
+            }
+
+            document.getElementById('compact-stats-time').textContent = `${totalActiveMins}분`;
+            const targetMins = 180; // 3 hours daily target
+            const pct = Math.min(100, Math.round((focusMins / targetMins) * 100));
+            document.getElementById('compact-stats-pct').textContent = `${pct}%`;
+
+            // Draw compact layout (6 rows of 20 columns)
+            for (let r = 0; r < 6; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = "flex gap-1";
+
+                for (let col = 0; col < 20; col++) {
+                    const blockIdx = r * 20 + col;
+                    const cellState = dotGridStates[blockIdx];
+
+                    const dot = document.createElement('div');
+                    dot.className = "flex-grow aspect-square rounded-sm transition-all duration-300 cursor-pointer ";
+                    
+                    if (cellState === 2) {
+                        dot.className += "bg-purple-500 shadow-[0_0_5px_rgba(168,85,247,0.4)]";
+                    } else if (cellState === 1) {
+                        dot.className += "bg-amber-400 shadow-[0_0_5px_rgba(250,204,21,0.4)]";
+                    } else {
+                        dot.className += "bg-neutral-800 hover:bg-neutral-750 border border-white/[0.02]";
+                    }
+
+                    if (blockIdx === liveIdx) {
+                        dot.className += " ring-1 ring-amber-400 animate-pulse";
+                    }
+
+                    dot.setAttribute('onclick', `toggleDotGridCell(${blockIdx})`);
+
+                    dot.addEventListener('mouseenter', () => {
+                        let text = "기록 대기 상태";
+                        if (cellState === 2) text = "완전 몰입 완수 ✨";
+                        else if (cellState === 1) text = "중단 또는 부분 집중 ⚠️";
+                        
+                        document.getElementById('compact-hover-time').textContent = convertIndexToTimeStr(blockIdx);
+                        document.getElementById('compact-hover-status').textContent = text;
+                        if (cellState === 2) {
+                            document.getElementById('compact-hover-status').className = "text-purple-400 font-bold";
+                        } else if (cellState === 1) {
+                            document.getElementById('compact-hover-status').className = "text-amber-400 font-bold";
+                        } else {
+                            document.getElementById('compact-hover-status').className = "text-slate-500 font-bold";
+                        }
+                    });
+
+                    rowDiv.appendChild(dot);
+                }
+                container.appendChild(rowDiv);
+            }
+        }
+
+        function resetDotGrid() {
+            openConfirmModal("하루 기록을 모두 비우고 초기화하시겠습니까?", () => {
+                dotGridStates = Array(120).fill(0);
+                saveDotGrid();
+                renderAllGrids();
+                showToast("기록 지도가 완전히 비워졌습니다.", "info");
+            });
+        }
+
+        // Gamified Flowerpot
+        function waterPlant(e) {
+            createXpParticles(e);
+            playWaterChime();
+            addPlantXp(10);
+            showToast("🌱 화분에 물을 주었습니다. (+10 XP)", "success");
+            triggerPlantWiggle();
+        }
+
+        function triggerPlantWiggle() {
+            const avatar = document.getElementById('plant-avatar');
+            avatar.style.animation = 'none';
+            avatar.offsetHeight; 
+            avatar.style.animation = 'plant-float 0.5s 1 ease-in-out';
+            setTimeout(() => {
+                avatar.style.animation = 'plant-float 4.5s infinite ease-in-out';
+            }, 500);
+        }
+
+        function playWaterChime() {
+            initAudioContext();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.35);
+
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(0);
+            osc.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function createXpParticles(e) {
+            const card = document.getElementById('flowerpot-card');
+            const rect = card.getBoundingClientRect();
+            
+            for (let i = 0; i < 4; i++) {
+                const p = document.createElement('span');
+                p.className = 'xp-particle';
+                p.textContent = '✦';
+                
+                const x = (rect.width / 2) + (Math.random() * 50 - 25);
+                const y = (rect.height / 2) + (Math.random() * 30 - 45);
+
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
+
+                card.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        function addPlantXp(amount) {
+            if (plantLevel >= maxLevel && plantXp >= xpPerLevel) return;
+
+            plantXp += amount;
+            if (plantXp >= xpPerLevel) {
+                if (plantLevel < maxLevel) {
+                    plantLevel++;
+                    plantXp = plantXp - xpPerLevel;
+                    playLevelUpChime();
+                    showToast(`🎉 식물이 [${plantData[plantLevel].title}] 단계로 성장했습니다!`, "success");
+                } else {
+                    plantXp = xpPerLevel;
+                }
+            }
+            savePlantState();
+            updatePlantUI();
+            checkBadges();
+        }
+
+        function playLevelUpChime() {
+            initAudioContext();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.35);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(idx * 0.08);
+                osc.stop(idx * 0.08 + 0.4);
+            });
+        }
+
+        function updatePlantUI() {
+            const data = plantData[plantLevel];
+            document.getElementById('plant-avatar').textContent = data.emoji;
+            document.getElementById('plant-level-title').textContent = data.title;
+            document.getElementById('plant-level-badge').textContent = `LV ${plantLevel}`;
+            document.getElementById('plant-status-text').textContent = data.desc;
+
+            const bar = document.getElementById('plant-xp-bar');
+            bar.style.width = `${plantXp}%`;
+            document.getElementById('plant-xp-text').textContent = `${plantXp} / 100 XP`;
+        }
+
+        // To-Do Planner Logic
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            const emptyState = document.getElementById('empty-state');
+            if (!taskList) return;
+            
+            taskList.innerHTML = '';
+
+            let filteredTasks = tasks;
+            if (currentFilter === 'active') {
+                filteredTasks = tasks.filter(t => !t.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTasks = tasks.filter(t => t.completed);
+            }
+
+            if (filteredTasks.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filteredTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = "flex items-center justify-between p-2.5 bg-neutral-900/40 border border-white/[0.02] rounded-xl soft-hover group";
+
+                const leftSection = document.createElement('div');
+                leftSection.className = "flex items-center gap-2.5 flex-grow cursor-pointer";
+                leftSection.setAttribute('onclick', `toggleTask(${task.id})`);
+
+                const checkBtn = document.createElement('button');
+                checkBtn.className = "w-4.5 h-4.5 rounded-md border flex items-center justify-center transition-all";
+                if (task.completed) {
+                    checkBtn.className += " bg-indigo-600 border-indigo-500 text-white";
+                    checkBtn.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i>';
+                } else {
+                    checkBtn.className += " border-slate-600 text-transparent";
+                    checkBtn.innerHTML = '<i data-lucide="check" class="w-3 h-3 opacity-0"></i>';
+                }
+
+                const textSpan = document.createElement('span');
+                textSpan.className = `text-xs font-medium ${task.completed ? 'line-through text-slate-500' : 'text-slate-200'}`;
+                textSpan.textContent = task.text;
+
+                leftSection.appendChild(checkBtn);
+                leftSection.appendChild(textSpan);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.setAttribute('onclick', `deleteTask(${task.id})`);
+                deleteBtn.className = "p-1 text-slate-500 hover:text-rose-400 rounded transition-all opacity-0 group-hover:opacity-100";
+                deleteBtn.innerHTML = '<i data-lucide="trash" class="w-3 h-3"></i>';
+
+                li.appendChild(leftSection);
+                li.appendChild(deleteBtn);
+                taskList.appendChild(li);
+            });
+
+            const completedCount = tasks.filter(t => t.completed).length;
+            const totalCount = tasks.length;
+            const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const itemsLeftCount = document.getElementById('items-left-count');
+
+            if (progressBar) progressBar.style.width = `${progressPct}%`;
+            if (progressPercent) progressPercent.textContent = `${progressPct}% 완료 (${completedCount}/${totalCount})`;
+            if (itemsLeftCount) itemsLeftCount.textContent = `${tasks.filter(t => !t.completed).length}개의 과업 진행 중`;
+
+            lucide.createIcons();
+            checkBadges();
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+            const input = document.getElementById('task-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const newTask = {
+                id: Date.now(),
+                text: val,
+                completed: false
+            };
+
+            tasks.push(newTask);
+            input.value = '';
+            
+            saveTasks();
+            renderTasks();
+            showToast("과업 목표가 추가되었습니다.", "success");
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => {
+                if (t.id === id) {
+                    const nextState = !t.completed;
+                    if (nextState) {
+                        addPlantXp(10);
+                        showToast("🎯 목표 완수! (+10 XP)", "success");
+                    }
+                    return { ...t, completed: nextState };
+                }
+                return t;
+            });
+            saveTasks();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+            renderTasks();
+            showToast("과업이 삭제되었습니다.", "info");
+        }
+
+        function filterTasks(f) {
+            currentFilter = f;
+            const filters = ['all', 'active', 'completed'];
+            filters.forEach(item => {
+                const btn = document.getElementById(`filter-${item}`);
+                if (btn) {
+                    if (item === f) {
+                        btn.className = "px-2.5 py-1 text-[9px] rounded-md bg-indigo-600 text-white font-semibold transition-all";
+                    } else {
+                        btn.className = "px-2.5 py-1 text-[9px] rounded-md text-slate-400 hover:text-slate-200 font-semibold transition-all";
+                    }
+                }
+            });
+            renderTasks();
+        }
+
+        function clearCompletedTasks() {
+            if (tasks.filter(t => t.completed).length === 0) {
+                showToast("삭제할 완료 목록이 없습니다.", "info");
+                return;
+            }
+            openConfirmModal("완료된 일정을 모두 삭제하시겠습니까?", () => {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                renderTasks();
+                showToast("완료 목록이 정상 정리되었습니다.", "info");
+            });
+        }
+
+        // Mood and Journal
+        function selectMood(m) {
+            activeMood = m;
+            const moods = ['happy', 'calm', 'tired', 'sad', 'stressed'];
+            
+            moods.forEach(item => {
+                const btn = document.getElementById(`mood-${item}`);
+                if (btn) {
+                    if (item === m) {
+                        btn.className = "flex flex-col items-center gap-1 p-1.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 transition-all duration-300";
+                    } else {
+                        btn.className = "flex flex-col items-center gap-1 p-1.5 rounded-xl bg-white/5 border border-transparent hover:bg-white/10 transition-all duration-300";
+                    }
+                }
+            });
+
+            saveMoodAndJournal();
+            showToast(`오늘의 감정 상태 [${m}]를 기록했습니다.`, "success");
+        }
+
+        function saveJournal() {
+            saveMoodAndJournal();
+            showToast("일기 저널 내용이 영구 보관되었습니다.", "success");
+        }
+
+        // Achievement Badges
+        function checkBadges() {
+            const badge1 = document.getElementById('badge-first-step');
+            if (badge1) {
+                if (plantLevel >= 2) {
+                    badge1.className = "flex flex-col items-center text-center p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 opacity-100 transition-all shadow";
+                } else {
+                    badge1.className = "flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all";
+                }
+            }
+
+            const badge2 = document.getElementById('badge-focus-master');
+            if (badge2) {
+                const purpleCount = dotGridStates.filter(s => s === 2).length;
+                if (purpleCount >= 5) {
+                    badge2.className = "flex flex-col items-center text-center p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 opacity-100 transition-all shadow";
+                } else {
+                    badge2.className = "flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all";
+                }
+            }
+
+            const badge3 = document.getElementById('badge-todo-slayer');
+            if (badge3) {
+                const completedCount = tasks.filter(t => t.completed).length;
+                if (completedCount >= 5) {
+                    badge3.className = "flex flex-col items-center text-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 opacity-100 transition-all shadow";
+                } else {
+                    badge3.className = "flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all";
+                }
+            }
+
+            const badge4 = document.getElementById('badge-world-tree');
+            if (badge4) {
+                if (plantLevel >= 5) {
+                    badge4.className = "flex flex-col items-center text-center p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 opacity-100 transition-all shadow";
+                } else {
+                    badge4.className = "flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/30 border border-white/5 opacity-35 transition-all";
+                }
+            }
+        }
+
+        // Daily Reports
+        function generateDailyReport() {
+            const completed = tasks.filter(t => t.completed);
+            const pending = tasks.filter(t => !t.completed);
+            const totalPurpleDots = dotGridStates.filter(s => s === 2).length;
+            const focusMinutes = totalPurpleDots * 10;
+            const moodMap = { happy: "😊 아주 좋음", calm: "😌 평온함", tired: "🥱 피곤함", sad: "😢 슬픔", stressed: "🤯 스트레스" };
+
+            let report = `## 📊 오늘의 몰입 대시보드 요약 리포트\n\n`;
+            report += `📅 날짜: ${document.getElementById('current-date').textContent}\n`;
+            report += `⏱️ 총 몰입 집중 시간: **${focusMinutes}분** (${totalPurpleDots} 개의 몰입 도장)\n`;
+            report += `🌱 성장 화분 등급: **${plantData[plantLevel].title}**\n`;
+            report += `🧠 오늘의 기분: **${moodMap[activeMood] || '선택하지 않음'}**\n\n`;
+            
+            report += `### 🎯 오늘의 할 일 진행 현황\n`;
+            report += `- 완수한 과제 (${completed.length}개):\n`;
+            if (completed.length > 0) {
+                completed.forEach(c => { report += `  * [x] ${c.text}\n`; });
+            } else {
+                report += `  * 완수한 할 일이 없습니다.\n`;
+            }
+
+            report += `- 미완수된 과제 (${pending.length}개):\n`;
+            if (pending.length > 0) {
+                pending.forEach(p => { report += `  * [ ] ${p.text}\n`; });
+            } else {
+                report += `  * 미해결 과제 없이 모두 완수했습니다!\n`;
+            }
+
+            const journal = document.getElementById('daily-journal').value.trim();
+            if (journal) {
+                report += `\n### 📝 작성해 둔 메모 & 회고\n> ${journal.replace(/\n/g, '\n> ')}`;
+            }
+
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = report;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextarea);
+
+            showToast("📝 마감 보고서가 복사되었습니다. 일기장 등에 붙여넣어 보세요!", "success");
+        }
+
+        // Backup and Restore
+        function exportData() {
+            const exportObject = {
+                tasks: tasks,
+                dotGridStates: dotGridStates,
+                plantLevel: plantLevel,
+                plantXp: plantXp,
+                activeMood: activeMood,
+                journal: document.getElementById('daily-journal').value,
+                timerFocus: customFocusTime,
+                timerBreak: customBreakTime
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `my_day_focus_backup_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            showToast("💾 백업 데이터 파일 다운로드가 시작됩니다.", "success");
+        }
+
+        function triggerDataImport() {
+            document.getElementById('import-file-input').click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedObj = JSON.parse(e.target.result);
+                    
+                    if (importedObj.tasks) tasks = importedObj.tasks;
+                    if (importedObj.dotGridStates) dotGridStates = importedObj.dotGridStates;
+                    if (importedObj.plantLevel) plantLevel = importedObj.plantLevel;
+                    if (importedObj.plantXp) plantXp = importedObj.plantXp;
+                    if (importedObj.activeMood) activeMood = importedObj.activeMood;
+                    if (importedObj.journal) document.getElementById('daily-journal').value = importedObj.journal;
+                    if (importedObj.timerFocus) customFocusTime = importedObj.timerFocus;
+                    if (importedObj.timerBreak) customBreakTime = importedObj.timerBreak;
+
+                    saveTasks();
+                    saveDotGrid();
+                    savePlantState();
+                    saveMoodAndJournal();
+                    
+                    renderTasks();
+                    renderAllGrids();
+                    updatePlantUI();
+                    selectMood(activeMood);
+                    checkBadges();
+
+                    showToast("🍀 데이터 복원이 정상적으로 완료되었습니다.", "success");
+                } catch (err) {
+                    showToast("잘못된 백업 파일 형식입니다.", "info");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Local Storage Sync
+        function saveTasks() {
+            localStorage.setItem('focus_dashboard_tasks', JSON.stringify(tasks));
+        }
+        function loadTasks() {
+            const stored = localStorage.getItem('focus_dashboard_tasks');
+            tasks = stored ? JSON.parse(stored) : [];
+        }
+
+        function saveMoodAndJournal() {
+            localStorage.setItem('focus_dashboard_mood', activeMood);
+            localStorage.setItem('focus_dashboard_journal', document.getElementById('daily-journal').value);
+        }
+        function loadMoodAndJournal() {
+            const storedMood = localStorage.getItem('focus_dashboard_mood');
+            if (storedMood) selectMood(storedMood);
+            const storedJournal = localStorage.getItem('focus_dashboard_journal');
+            if (storedJournal) document.getElementById('daily-journal').value = storedJournal;
+        }
+
+        function saveDotGrid() {
+            localStorage.setItem('focus_dashboard_dotgrid', JSON.stringify(dotGridStates));
+        }
+        function loadDotGrid() {
+            const stored = localStorage.getItem('focus_dashboard_dotgrid');
+            dotGridStates = stored ? JSON.parse(stored) : Array(120).fill(0);
+        }
+
+        function savePlantState() {
+            localStorage.setItem('focus_dashboard_plant_lvl', plantLevel);
+            localStorage.setItem('focus_dashboard_plant_xp', plantXp);
+        }
+        function loadPlantState() {
+            const lvl = localStorage.getItem('focus_dashboard_plant_lvl');
+            const xp = localStorage.getItem('focus_dashboard_plant_xp');
+            if (lvl) plantLevel = parseInt(lvl);
+            if (xp) plantXp = parseInt(xp);
+        }
+
+        function saveTimerSettings() {
+            localStorage.setItem('focus_dashboard_timer_focus', customFocusTime);
+            localStorage.setItem('focus_dashboard_timer_break', customBreakTime);
+        }
+        function loadTimerSettings() {
+            const tf = localStorage.getItem('focus_dashboard_timer_focus');
+            const tb = localStorage.getItem('focus_dashboard_timer_break');
+            if (tf) customFocusTime = parseInt(tf);
+            if (tb) customBreakTime = parseInt(tb);
+
+            document.getElementById('slider-focus').value = customFocusTime;
+            document.getElementById('slider-break').value = customBreakTime;
+            document.getElementById('label-focus-time').textContent = `${customFocusTime}분`;
+            document.getElementById('label-break-time').textContent = `${customBreakTime}분`;
+
+            timerSeconds = customFocusTime * 60;
+        }
+
+        // Modal Controls
+        let currentModalCallback = null;
+
+        function openConfirmModal(msg, onAccept) {
+            document.getElementById('confirm-modal-msg').textContent = msg;
+            
+            const modal = document.getElementById('custom-confirm-modal');
+            const box = document.getElementById('confirm-modal-box');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            box.classList.remove('scale-95');
+
+            currentModalCallback = onAccept;
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('custom-confirm-modal');
+            const box = document.getElementById('confirm-modal-box');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            box.classList.add('scale-95');
+
+            currentModalCallback = null;
+        }
+
+        document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirmModal);
+        document.getElementById('btn-confirm-accept').addEventListener('click', () => {
+            if (currentModalCallback) currentModalCallback();
+            closeConfirmModal();
+        });
+
+        // Custom Toast Notifications
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = "premium-glass flex items-center gap-3 p-3 rounded-xl border border-white/5 shadow-xl opacity-0 transform translate-y-2 transition-all duration-300";
+            
+            let iconCode = 'sparkles';
+            let colorClass = 'text-indigo-400';
+            if (type === 'info') {
+                iconCode = 'info';
+                colorClass = 'text-amber-400';
+            }
+
+            toast.innerHTML = `
+                <div class="${colorClass}">
+                    <i data-lucide="${iconCode}" class="w-3.5 h-3.5"></i>
+                </div>
+                <p class="text-[10px] font-semibold text-slate-200">${msg}</p>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-2');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
